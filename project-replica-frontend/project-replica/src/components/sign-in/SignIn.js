@@ -5,6 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import rena from "../../signIn.png";
+import { Link } from "react-router-dom";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ function SignIn() {
   return (
     <div className="md:min-h-screen mt-10">
       
-      <div className="flex justify-center">
+      <div className="flex justify-center"><Link to = "/">
         <div
           className="font-bold text-4xl md:text-6xl cursor-pointer flex items-center font-[Poppins] 
       text-gray-800"
@@ -85,7 +86,7 @@ function SignIn() {
             <ion-icon name="logo-ionic"></ion-icon>
           </span>
           CRYPTOPTION
-        </div>
+        </div></Link>
       </div>
       <div className="flex mt-10">
         <div className="md:w-3/5 collapse md:visible">

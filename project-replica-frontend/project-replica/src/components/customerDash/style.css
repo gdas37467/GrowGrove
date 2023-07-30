@@ -1,0 +1,27 @@
+@keyframes pulse {
+    0%, 100% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loading-container {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  .loading-spinner {
+    animation: spin 2s linear infinite;
+  }

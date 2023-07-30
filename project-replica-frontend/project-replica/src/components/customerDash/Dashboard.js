@@ -6,7 +6,8 @@ import Wallet from './Wallet';
 import Referral from './Referral';
 import Withdraw from '../Withdraw';
 import Deposit from '../Deposit';
-
+import Packages from './Packages';
+import './style.css';
 
 const Dashboard = () => {
   return (
@@ -19,6 +20,7 @@ const Dashboard = () => {
           <Route exact path="/referral" element={<Referral/>} />
           <Route exact path="/withdraw" element={<Withdraw/>}/>
           <Route exact path="/deposit" element={<Deposit/>}/>
+          <Route exact path="/packages" element={<Packages/>}/>
       
         </Routes>
       </div>
