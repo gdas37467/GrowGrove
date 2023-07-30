@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'userAuthentication.apps.UserauthenticationConfig',#custom added
     'adminpanel.apps.AdminpanelConfig', #custom added
     'corsheaders',#custom addded
-    # 'django_crontab',#custom added
+    'django_crontab',#custom added
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,9 +55,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', #custom added
 ]
 
-# CRONJOBS = [
-# ('*/2 * * * *', 'crypyt_backend.cron.my_job')
-# ]
+
 
 # custom added
 CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', ]
@@ -181,3 +179,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CRONJOBS = [
+ ('*/1 * * * *', 'adminpanel.cron.update_referral','>> ' + os.path.join(BASE_DIR,'log/debug7.log' + ' 2>&1 ')),
+ ('*/1 * * * *', 'adminpanel.cron.my_job','>> ' + os.path.join(BASE_DIR,'log/debug7.log' + ' 2>&1 '))
+
+]
