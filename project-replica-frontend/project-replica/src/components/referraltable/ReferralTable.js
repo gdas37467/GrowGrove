@@ -1,57 +1,57 @@
 import React, { useState } from 'react';
 
-const transactions = [
-    {
-        name: 'Arunabh',
-        referrerName: 'Abhijeet',
-        refereeID: 'abc123',
-        enrollmentDate: '2023-07-01',
+// const transactions = [
+//     {
+//         name: 'Arunabh',
+//         referrerName: 'Abhijeet',
+//         refereeID: 'abc123',
+//         enrollmentDate: '2023-07-01',
       
-      },
-      {
-        name: 'Arunabh',
-        referrerName: 'Abhijeet',
-        refereeID: 'abc123',
-        enrollmentDate: '2023-07-01',
+//       },
+//       {
+//         name: 'Arunabh',
+//         referrerName: 'Abhijeet',
+//         refereeID: 'abc123',
+//         enrollmentDate: '2023-07-01',
       
-      },
-      {
-        name: 'Arunabh',
-        referrerName: 'Abhijeet',
-        refereeID: 'abc123',
-        enrollmentDate: '2023-07-01',
+//       },
+//       {
+//         name: 'Arunabh',
+//         referrerName: 'Abhijeet',
+//         refereeID: 'abc123',
+//         enrollmentDate: '2023-07-01',
       
-      },
-      {
-        name: 'Arunabh',
-        referrerName: 'Abhijeet',
-        refereeID: 'abc123',
-        enrollmentDate: '2023-07-01',
+//       },
+//       {
+//         name: 'Arunabh',
+//         referrerName: 'Abhijeet',
+//         refereeID: 'abc123',
+//         enrollmentDate: '2023-07-01',
       
-      },
-      {
-        name: 'Arunabh',
-        referrerName: 'Abhijeet',
-        refereeID: 'abc123',
-        enrollmentDate: '2023-07-01',
+//       },
+//       {
+//         name: 'Arunabh',
+//         referrerName: 'Abhijeet',
+//         refereeID: 'abc123',
+//         enrollmentDate: '2023-07-01',
       
-      },
-      {
-        name: 'Arunabh',
-        referrerName: 'Abhijeet',
-        refereeID: 'abc123',
-        enrollmentDate: '2023-07-01',
+//       },
+//       {
+//         name: 'Arunabh',
+//         referrerName: 'Abhijeet',
+//         refereeID: 'abc123',
+//         enrollmentDate: '2023-07-01',
       
-      },
-];
+//       },
+// ];
 
 const ReferralTable = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const transactionsPerPage = 10;
-  const totalPages = Math.ceil(transactions.length / transactionsPerPage);
+  const totalPages = Math.ceil(props.level.length / transactionsPerPage);
   const indexOfLastTransaction = currentPage * transactionsPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
-  const currentTransactions = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
+  const currentTransactions = props.level.slice(indexOfFirstTransaction, indexOfLastTransaction);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -64,20 +64,33 @@ const ReferralTable = (props) => {
       <table className="min-w-full text-white border text-sm md:text-md border-gray-200 bg-gray-900">
         <thead>
           <tr>
+          <th className="py-2 px-4 border-b text-left">Referee ID</th>
             <th className="py-2 px-4 border-b text-left">Name</th>
-            <th className="py-2 px-4 border-b text-left">ReferrerName</th>
-            <th className="py-2 px-4 border-b text-left">RefereeID</th>
+            <th className="py-2 px-4 border-b text-left">Sponsor ID</th>
+            <th className="py-2 px-4 border-b text-left">Total Packages</th>
+            <th className="py-2 px-4 border-b text-left">Amount</th>
+
+            
             <th className="py-2 px-4 border-b text-left">EnrollmentDate</th>
         
           </tr>
         </thead>
         <tbody>
+          {
+            currentTransactions.length === 0 && (
+              <td className="" colSpan="6">
+                <div className='py-2 px-4 flex justify-center'>List is Empty</div></td>
+            )
+          }
           {currentTransactions.map((transaction, index) => (
             <tr key={index}>
+              <td className="py-2 px-4 border-b">{transaction.username}</td>
               <td className="py-2 px-4 border-b">{transaction.name}</td>
-              <td className="py-2 px-4 border-b">{transaction.referrerName}</td>
-              <td className="py-2 px-4 border-b">{transaction.refereeID}</td>
-              <td className="py-2 px-4 border-b">{transaction.enrollmentDate}</td>
+              <td className="py-2 px-4 border-b">{transaction.sponsorId}</td>
+              <td className="py-2 px-4 border-b">{transaction.totalPackages}</td>
+              <td className="py-2 px-4 border-b">{transaction.totalPackages*100}</td>
+              
+              <td className="py-2 px-4 border-b">{transaction.date}</td>
              
             </tr>
           ))}

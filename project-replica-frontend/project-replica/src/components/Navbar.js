@@ -6,7 +6,7 @@ function Navbar() {
 
     
     
-      let [open, setOpen] = useState(false);
+  let [open, setOpen] = useState(false);
 
   return (
     <div className="shadow-md w-full fixed top-0 left-0 z-20">
@@ -43,7 +43,7 @@ function Navbar() {
             </li>
             <li className="md:ml-8 text-md md:my-0 my-7">
               <Link
-                to="/sign-in"
+                to="/about"
                 className="text-gray-800 hover:text-gray-400 duration-500 font-opsans"
               >
                 ABOUT
@@ -51,7 +51,7 @@ function Navbar() {
             </li>
             <li className="md:ml-8 text-md md:my-0 my-7">
               <a
-                href="/adminpanel"
+                href="/contact-us"
                 className="text-gray-800 hover:text-gray-400 duration-500 font-opsans"
               >
                 CONTACT

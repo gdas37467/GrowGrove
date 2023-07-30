@@ -22,5 +22,6 @@ urlpatterns = [
 
     # Authincation path (send to userAuthentication)
     path('user/auth/',include('userAuthentication.urls')),
-    path('adminpanel/',include('adminpanel.urls'))
+    path('adminpanel/',include('adminpanel.urls')),
+    
 ]

@@ -11,6 +11,7 @@ class UserModelDB(models.Model):
     sponsorName = models.TextField()
     referralLink = models.TextField()
     registrationDate = models.DateField()
+    walletAddress = models.TextField(default="Address not set yet")
    
 
     def __str__(self) :
@@ -23,6 +24,8 @@ class ReferralDB(models.Model):
     level1 = models.JSONField()
     level2 = models.JSONField()
     bonus1 =models.IntegerField(default=0)
+    instant1 =models.IntegerField(default=0) #Instant bonus on referral
+    instant2 = models.IntegerField(default=0) # Instant bonus on Referral
     bonus2= models.IntegerField(default=0)
     
 
@@ -46,13 +49,24 @@ class Deposit(models.Model) :
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     username = models.TextField()
     quantity = models.PositiveIntegerField(default=0)
-    transactionId = models.TextField()
-    payment_id = models.TextField()
+    transactionId = models.TextField(default="N/A")
+    payment_id = models.TextField("N/A")
     date = models.DateTimeField()
     status = models.TextField(default='pending')
     earning = models.DecimalField(default=Decimal("0.00"),max_digits=50, decimal_places=2)
     
+
     
+    def __str__(self) : 
+        return self.username
+    
+class Withdraw(models.Model):
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    username =models.TextField()
+    amount = models.DecimalField(default=Decimal("0.00"),max_digits=50, decimal_places=2)
+    status = models.TextField(default='pending')
+    date = models.DateTimeField()
+
     def __str__(self) : 
         return self.username
 

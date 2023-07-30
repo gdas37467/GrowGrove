@@ -1,14 +1,12 @@
-import React from 'react'
+import React from "react";
 import tim from "../rename.jpeg";
-
 
 function Homepage() {
   return (
     <>
-    
-    <div className="md:w-full h-screen  relative mt-30 md:mt-24 ">
+      <div className="md:w-full h-screen  relative mt-30 md:mt-24 ">
         <div
-          className="w-full h-full md:bg-cover bg-cover bg-fixed bg-no-repeat"
+          className="w-full h-full md:bg-cover bg-cover bg-fixed bg-no-repeat "
           style={{ backgroundImage: `url(${tim})` }}
         ></div>
 
@@ -24,8 +22,7 @@ function Homepage() {
           </div>
           <div className="font-georgia text-white md:mx-20 mt-10 mx-3 md:text-xl text-lg">
             -"Experience the power of decentralized investments and unlock your
-            financial freedom with us. Sign up for a Fully Automated
-            account."
+            financial freedom with us. Sign up for a Fully Automated account."
           </div>
         </div>
       </div>
@@ -105,11 +102,9 @@ function Homepage() {
             </div>
           </div>
         </div>
-        
       </div>
-      
     </>
-  )
+  );
 }
 
-export default Homepage
+export default Homepage;

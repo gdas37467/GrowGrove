@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 
-const DepositTable = ({ transactions, onApprove }) => {
+const DepositTable = ({ transactions, onApprove,page}) => {
     const [currentPage, setCurrentPage] = useState(1);
   const transactionsPerPage = 10;
   const totalPages = Math.ceil(transactions.length / transactionsPerPage);
@@ -25,11 +25,14 @@ const DepositTable = ({ transactions, onApprove }) => {
             <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
               Username
             </th>
-            <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
+            <th className={`px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider ${page === 'withdraw' ? 'hidden' : 'visible'}`}>
               Quantity
             </th>
             <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
               Amount
+            </th>
+            <th className={`px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider ${page === 'withdraw' ? 'hidden' : 'visible'}`}>
+              Transaction ID
             </th>
             
             <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
@@ -38,13 +41,31 @@ const DepositTable = ({ transactions, onApprove }) => {
             <th className="px-6 py-3 border-b-2 border-gray-300"></th>
           </tr>
         </thead>
+
+        {/* {
+                empty===true && (
+                  <tbody className="">
+                    <tr>
+                      <td className="" colSpan="5">
+                      <div className="text-slate-600 flex justify-center" > <div className="my-5">Your Cart is Empty</div>
+                      </div>
+
+                      </td>
+                    </tr>
+                    
+                  </tbody>
+                )
+              } */}
         <tbody>
           {currentTransactions && currentTransactions.map((transaction,index) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{transaction.date}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{transaction.username}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{transaction.quantity}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{transaction.quantity*100}</td>
+              <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${page === 'withdraw' ? 'hidden' : 'visible'}`}>{transaction.quantity}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{page === 'withdraw' ? transaction.amount : transaction.quantity*100}</td>
+              <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${page === 'withdraw' ? 'hidden' : 'visible'}`}>
+              {transaction.transaction_id}
+            </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {transaction.status}
               </td>
