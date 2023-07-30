@@ -30,12 +30,12 @@ ALLOWED_HOSTS = []
 
 #EMAIL SETUP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'cryptoption.net.in'  # Replace with your email server's host address
+EMAIL_HOST = '#####'  # Replace with your email server's host address
 EMAIL_PORT = 587  # Replace with your email server's port number (usually 587 for TLS)
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'verification@cryptoption.net.in'  # Replace with your email address
-EMAIL_HOST_PASSWORD = 'Cryptoption@1234'  # Replace with your email password
+EMAIL_HOST_PASSWORD = '######'  # Replace with your email password
 DEFAULT_FROM_EMAIL = 'verification@cryptoption.net.in'  # Replace with your email address
 
 
