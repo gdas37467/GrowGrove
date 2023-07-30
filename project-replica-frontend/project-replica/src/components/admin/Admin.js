@@ -12,8 +12,24 @@ const Admin = () => {
   // ];
 
   const [transactions, settransactions] = useState([]);
+  const [withdrawals, setWithdrawals] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [empty, setEmpty] = useState(false);
 
+
+  const [page,setPage] = useState('deposit');
+
+
+  const handlepageDeposit = () =>
+  {
+    setPage('deposit');
+  }
+  const handlepageWithdraw = () =>
+  {
+    setPage('withdraw');
+  }
+
+ 
   useEffect(() => {
     const fetchDepositData = async () => {
       try {
@@ -36,7 +52,8 @@ const Admin = () => {
 
         // console.log(meds)
         settransactions(response.data.transactions);
-        console.log(response.data.transactions);
+        setWithdrawals(response.data.withdrawals);
+        console.log(response.data);
       } catch (e) {
         // console.log(e);
       } finally {
@@ -47,10 +64,12 @@ const Admin = () => {
     fetchDepositData();
   }, []);
 
+
+
   console.log(loading);
 
   //  const [processing, setProcessing] = useState(false);
-  const handleApprove = async (transactionId) => {
+  const handleDeposit = async (transactionId) => {
     // Logic to handle the approval action
 
     if (loading) return; // Prevent multiple form submissions
@@ -77,7 +96,58 @@ const Admin = () => {
         autoClose: 2000, // Duration in milliseconds
         className: "",
       });
-      if (response.status === 200) {
+      
+     if (response.status === 200) {
+        // Redirect to another page
+        window.location.href = '/adminpanel';
+      } else {
+        console.error('Unexpected response status:', response.status);
+      }
+    } catch (error) {
+      console.error("error occured");
+      console.error(error);
+      toast.error("Approve Failed", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000, // Duration in milliseconds
+        className: "",
+      });
+    }
+    setLoading(false);
+    // console.log(formData);
+  };
+
+
+
+
+  const handleWithdraw = async (transactionId) => {
+    // Logic to handle the approval action
+
+    if (loading) return; // Prevent multiple form submissions
+    setLoading(true); // Set processing state to true
+
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/adminpanel/approve_withdraw/",
+
+        {
+          id: transactionId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+          },
+        }
+      );
+      console.log(response.data);
+      toast.success(response.data.success, {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000, // Duration in milliseconds
+        className: "",
+      });
+      
+     if (response.status === 200) {
         // Redirect to another page
         window.location.href = '/adminpanel';
       } else {
@@ -104,8 +174,24 @@ const Admin = () => {
         </div>
       ) : (
         <div className="mt-32">
-          <h1>Deposit Transactions</h1>
-          <Adeposit transactions={transactions} onApprove={handleApprove} />
+          <div className="flex  justify-center mt-2">
+            <button className="  bg-green-500 shadow-green-400 rounded-md shadow-inner px-12 py-3" onClick={handlepageDeposit}>Deposit</button>
+            <button className=" bg-red-500 rounded-md px-12 shadow-inner shadow-red-400 py-3 ml-5" onClick={handlepageWithdraw}>Withdraw</button>
+          </div>
+          {page === 'deposit' && (
+            <>
+            <h1>Deposit Transactions</h1>
+          <Adeposit transactions={transactions} onApprove={handleDeposit} page = {'deposit'}/>
+            </>
+          ) }
+          {
+            page === 'withdraw' && (
+              <>
+              <h1>Withdrawal Transactions</h1>
+          <Adeposit transactions={withdrawals} page = {'withdraw'} onApprove={handleWithdraw}/>
+              </>
+            )
+          }
         </div>
       )}
     </>

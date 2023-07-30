@@ -1,6 +1,6 @@
 import React from "react";
 import TransactionTable from "./deposit-withdrawl/TransactionTable";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import axios from "axios";
 import {toast} from 'react-toastify';
 function Deposit() {
@@ -85,6 +85,45 @@ function Deposit() {
     setProcessing(false);
     console.log(formData);
   };
+
+  //Fetch Deposit List
+  const [transactions, setTransactions] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchDepositData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const header = {
+          token: token,
+        };
+
+        const response = await axios.get(
+          "http://127.0.0.1:8000/user/auth/get-user-deposit/",
+          {
+            headers: header,
+          }
+        );
+       
+        setTransactions(response.data.transactions)
+        console.log(response);
+      } catch (e) {
+        // console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepositData();
+  }, []);
+
+
+
+
+
+
+
    
   return (
     <div className="text-white font-opsans text-base md:text-md mx-4 my-5 min-h-screen">
@@ -161,7 +200,7 @@ function Deposit() {
       </form>
 
       <div className="">
-        <TransactionTable title = {"Deposit"}/>
+        <TransactionTable title = {"Deposit"} transactions = {transactions}/>
       </div>
     </div>
 

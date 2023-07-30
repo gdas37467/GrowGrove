@@ -28,6 +28,21 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+#EMAIL SETUP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '#####'  # Replace with your email server's host address
+EMAIL_PORT = 587  # Replace with your email server's port number (usually 587 for TLS)
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'verification@cryptoption.net.in'  # Replace with your email address
+EMAIL_HOST_PASSWORD = '######'  # Replace with your email password
+DEFAULT_FROM_EMAIL = 'verification@cryptoption.net.in'  # Replace with your email address
+
+
+
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -62,7 +77,6 @@ CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 
 
 # custom added

@@ -1,61 +1,72 @@
 import React, { useState } from 'react';
 
-const transactions = [
-    {
-        time: '2023-07-01 09:30:00',
-        walletAddress: '0x123456789abcdef',
-        transactionId: 'abc123',
-        amount: 10.0,
-        status: 'Completed',
-      },
-      {
-        time: '2023-07-01 10:15:00',
-        walletAddress: '0x987654321fedcba',
-        transactionId: 'def456',
-        amount: 5.0,
-        status: 'Pending',
-      },
-      {
-        time: '2023-07-01 09:30:00',
-        walletAddress: '0x123456789abcdef',
-        transactionId: 'abc123',
-        amount: 10.0,
-        status: 'Completed',
-      },
-      {
-        time: '2023-07-01 10:15:00',
-        walletAddress: '0x987654321fedcba',
-        transactionId: 'def456',
-        amount: 5.0,
-        status: 'Pending',
-      },
-      {
-        time: '2023-07-01 09:30:00',
-        walletAddress: '0x123456789abcdef',
-        transactionId: 'abc123',
-        amount: 10.0,
-        status: 'Completed',
-      },
-      {
-        time: '2023-07-01 10:15:00',
-        walletAddress: '0x987654321fedcba',
-        transactionId: 'def456',
-        amount: 5.0,
-        status: 'Pending',
-      },
-];
+// const transactions = [
+//     {
+//         time: '2023-07-01 09:30:00',
+//         walletAddress: '0x123456789abcdef',
+//         transactionId: 'abc123',
+//         amount: 10.0,
+//         status: 'Completed',
+//       },
+//       {
+//         time: '2023-07-01 10:15:00',
+//         walletAddress: '0x987654321fedcba',
+//         transactionId: 'def456',
+//         amount: 5.0,
+//         status: 'Pending',
+//       },
+//       {
+//         time: '2023-07-01 09:30:00',
+//         walletAddress: '0x123456789abcdef',
+//         transactionId: 'abc123',
+//         amount: 10.0,
+//         status: 'Completed',
+//       },
+//       {
+//         time: '2023-07-01 10:15:00',
+//         walletAddress: '0x987654321fedcba',
+//         transactionId: 'def456',
+//         amount: 5.0,
+//         status: 'Pending',
+//       },
+//       {
+//         time: '2023-07-01 09:30:00',
+//         walletAddress: '0x123456789abcdef',
+//         transactionId: 'abc123',
+//         amount: 10.0,
+//         status: 'Completed',
+//       },
+//       {
+//         time: '2023-07-01 10:15:00',
+//         walletAddress: '0x987654321fedcba',
+//         transactionId: 'def456',
+//         amount: 5.0,
+//         status: 'Pending',
+//       },
+// ];
 
 const TransactionTable = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const transactionsPerPage = 10;
-  const totalPages = Math.ceil(transactions.length / transactionsPerPage);
+  const totalPages = Math.ceil(props.transactions.length / transactionsPerPage);
   const indexOfLastTransaction = currentPage * transactionsPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
-  const currentTransactions = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
+  const currentTransactions = props.transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+
+  const class_ = (status) => 
+  {
+    if(status === 'Expired')
+      return 'text-red-500';
+    else if(status === 'Pending')
+      return 'text-orange-500'
+    else
+      return 'text-green-500'
+  }
 
   return (
     <div className="container  py-8 text-white ">
@@ -64,21 +75,26 @@ const TransactionTable = (props) => {
       <table className="min-w-full text-white border text-sm md:text-md border-gray-200 bg-gray-900">
         <thead>
           <tr>
-            <th className="py-2 px-4 border-b text-left">Time</th>
-            <th className="py-2 px-4 border-b text-left">Wallet Address</th>
-            <th className="py-2 px-4 border-b text-left">Transaction ID</th>
+          <th className="py-2 px-4 border-b text-left ">Sl. </th>
+            <th className="py-2 px-4 border-b text-left">Date</th>
+           
             <th className="py-2 px-4 border-b text-left">Amount</th>
             <th className="py-2 px-4 border-b text-left">Status</th>
           </tr>
         </thead>
         <tbody>
-          {currentTransactions.map((transaction, index) => (
+          {
+            currentTransactions.length === 0 && (
+              <td className="" colSpan="5">
+                <div className='py-2 px-4 flex justify-center'>List is Empty</div></td>
+            )
+          }
+          {currentTransactions && currentTransactions.map((transaction, index) => (
             <tr key={index}>
-              <td className="py-2 px-4 border-b">{transaction.time}</td>
-              <td className="py-2 px-4 border-b">{transaction.walletAddress}</td>
-              <td className="py-2 px-4 border-b">{transaction.transactionId}</td>
-              <td className="py-2 px-4 border-b">{transaction.amount}</td>
-              <td className="py-2 px-4 border-b">{transaction.status}</td>
+              <td className="py-2 px-4 border-b">{index+1}</td>
+              <td className="py-2 px-4 border-b">{transaction.date}</td>
+              <td className="py-2 px-4 border-b">${transaction.amount}</td>
+              <td className={`py-2 px-4 border-b ${class_(transaction.status)}`}>{transaction.status}</td>
             </tr>
           ))}
         </tbody>
