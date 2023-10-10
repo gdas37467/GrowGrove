@@ -321,7 +321,7 @@ def send_otp(request):
                 otp = generate_otp()
                 message = f'Your OTP for password update is: {otp}'
                 subject = 'OTP Verification'
-                from_email = 'verification@cryptoption.net.in'  # Replace with your email
+                from_email = 'gdas37467@gmail.com'  # Replace with your email
                 recipient_list = [email]
 
                 send_mail(subject, message, from_email, recipient_list)
@@ -370,7 +370,7 @@ def resend_otp(request):
             otp = generate_otp()
             message = f'Your OTP for password update is: {otp}'
             subject = 'OTP Verification'
-            from_email = 'verification@cryptoption.net.in'  # Replace with your email
+            from_email = 'gdas37467@gmail.com'  # Replace with your email
             recipient_list = [email]
 
             send_mail(subject, message, from_email, recipient_list)
@@ -467,7 +467,7 @@ def genQr(request):
         try:
             secret_k =pyotp.random_base32()
             #request.session["secret_key"] = secret_key
-            uri = pyotp.totp.TOTP(secret_k).provisioning_uri(userIdEmail, issuer_name='CRYPTOPTION')
+            uri = pyotp.totp.TOTP(secret_k).provisioning_uri(userIdEmail, issuer_name='GrowGrove')
             # img = qrcode.make(uri)
             # img.save("gourabQR.png")
 

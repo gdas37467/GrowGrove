@@ -33,13 +33,13 @@ ALLOWED_HOSTS = []
 
 #EMAIL SETUP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'cp.ultahost.com'  # Replace with your email server's host address
-EMAIL_PORT = 587  # Replace with your email server's port number (usually 587 for TLS)
+EMAIL_HOST = 'gmail'  
+EMAIL_PORT = 587  
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'support@cryptoption.net.in'  # Replace with your email address
-EMAIL_HOST_PASSWORD = '4u20dP0Neo'  # Replace with your email password
-DEFAULT_FROM_EMAIL = 'support@cryptoption.net.in'  # Replace with your email address
+EMAIL_HOST_USER = 'gdas37467@gmail.com'  
+EMAIL_HOST_PASSWORD = '###'  
+DEFAULT_FROM_EMAIL = 'gdas37467@gmail.com' 
 
 
 
