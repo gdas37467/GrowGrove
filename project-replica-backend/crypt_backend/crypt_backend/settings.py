@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_URL = '/media/'
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,15 +29,17 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+
 #EMAIL SETUP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = '#####'  # Replace with your email server's host address
+EMAIL_HOST = 'cp.ultahost.com'  # Replace with your email server's host address
 EMAIL_PORT = 587  # Replace with your email server's port number (usually 587 for TLS)
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'verification@cryptoption.net.in'  # Replace with your email address
-EMAIL_HOST_PASSWORD = '######'  # Replace with your email password
-DEFAULT_FROM_EMAIL = 'verification@cryptoption.net.in'  # Replace with your email address
+EMAIL_HOST_USER = 'support@cryptoption.net.in'  # Replace with your email address
+EMAIL_HOST_PASSWORD = '4u20dP0Neo'  # Replace with your email password
+DEFAULT_FROM_EMAIL = 'support@cryptoption.net.in'  # Replace with your email address
 
 
 
@@ -56,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
 ]
 
 MIDDLEWARE = [
@@ -78,7 +82,10 @@ CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', ]
 CORS_ALLOW_ALL_ORIGINS = True
 
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+UPLOADED_FILES_USE_URL = True
 # custom added
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
@@ -89,6 +96,11 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://*',
     'http://*'
+]
+
+[
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 ]
 
 CORS_ALLOW_METHODS = [
@@ -195,8 +207,27 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CRONJOBS = [
- ('*/1 * * * *', 'adminpanel.cron.update_referral','>> ' + os.path.join(BASE_DIR,'log/debug7.log' + ' 2>&1 ')),
- ('*/1 * * * *', 'adminpanel.cron.my_job','>> ' + os.path.join(BASE_DIR,'log/debug7.log' + ' 2>&1 '))
+# CRONJOBS = [
+#  ('*/1 * * * *', 'adminpanel.cron.update_referral','>> ' + os.path.join(BASE_DIR,'log/debug7.log' + ' 2>&1 ')),
+#  ('*/1 * * * *', 'adminpanel.cron.my_job','>> ' + os.path.join(BASE_DIR,'log/debug7.log' + ' 2>&1 '))
+# ]
 
-]
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        'logfile': {
+            'level':'DEBUG',
+            'class':'logging.FileHandler',
+            'filename': str(BASE_DIR) + "/../logfile",
+        },
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console', 'logfile']
+    },
+}

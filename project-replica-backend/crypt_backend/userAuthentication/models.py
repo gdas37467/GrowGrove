@@ -2,6 +2,10 @@ from django.db import models
 # Create your models here.
 import uuid
 from decimal import Decimal
+from djongo.storage import GridFSStorage
+from django.conf import settings
+
+grid_fs_storage = GridFSStorage(collection='deposit_files', base_url='/media/')
 # Create your models here.
 class UserModelDB(models.Model):
     
@@ -12,6 +16,13 @@ class UserModelDB(models.Model):
     referralLink = models.TextField()
     registrationDate = models.DateField()
     walletAddress = models.TextField(default="Address not set yet")
+    
+    # Newly added
+    is2fa = models.BooleanField(default=False)
+    base_64_qr = models.TextField(default="",max_length=5000)
+    secret_key = models.TextField(default="",max_length=200)
+
+
    
 
     def __str__(self) :
@@ -54,6 +65,8 @@ class Deposit(models.Model) :
     date = models.DateTimeField()
     status = models.TextField(default='pending')
     earning = models.DecimalField(default=Decimal("0.00"),max_digits=50, decimal_places=2)
+    file = models.FileField(default=None, upload_to='deposit', storage=grid_fs_storage)
+    
     
 
     
@@ -66,6 +79,7 @@ class Withdraw(models.Model):
     amount = models.DecimalField(default=Decimal("0.00"),max_digits=50, decimal_places=2)
     status = models.TextField(default='pending')
     date = models.DateTimeField()
+    walletAddress = models.TextField(default=" ")
 
     def __str__(self) : 
         return self.username

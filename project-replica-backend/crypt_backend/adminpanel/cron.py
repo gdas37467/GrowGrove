@@ -1,4 +1,7 @@
+PATH = '/home/sammy/my-project/.env/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/hestia/bin'
+
 from userAuthentication.models import Mypackages,Deposit,ReferralDB
+
 import uuid
 import json
 from decimal import Decimal
@@ -22,16 +25,16 @@ def my_job():
                 if depositObj.status == 'pending' or depositObj.status == 'expired':
                     continue
                 else:
-                    price = float(100*depositObj.quantity)
+                    price = float(500*depositObj.quantity)
                     if float(Decimal(str(depositObj.earning))) >= 5.00*price:
                         depositObj.status = 'expired'
                         continue
                     else:
-                        profit = (price * (1.5 / float(100)))
+                        profit = (price * (1.5 / float(500)))
                         earning = profit + float(Decimal(str(depositObj.earning)))
                         total_packages += depositObj.quantity
-                        total_earning +=earning
-                        current_balance +=earning
+                        total_earning +=profit
+                        current_balance +=profit
                         print(earning)
                         update = Deposit.objects.filter(id = uuid.UUID(item)).update(earning = earning)
         
@@ -58,32 +61,33 @@ def update_referral():
             for item in level1:
                 #print(item)
                 usernameObj = Mypackages.objects.filter(username = item).first()
-                userpackages = userpackages = json.loads(usernameObj.packages)
-                for item in userpackages:
-                    #print(item)
-                    id = uuid.UUID(item).hex
-                    #print(id)
-                    depositObj = Deposit.objects.filter(id = id).first()
-                    #print(depositObj.username)
-                    if depositObj.status == 'pending' or depositObj.status == 'expired':
-                        continue
-                    else:
-                        
-                        #created_date = depositObj.date.date()
-                        created_date = datetime.datetime.strptime('2023-05-18', "%Y-%m-%d").date()
-                        current_date_string= datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata')).date().isoformat()
-                        current_date = datetime.datetime.strptime(current_date_string, "%Y-%m-%d").date()
-                        #print("\n",date)
-                        # current_time_string = datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata')).isoformat()
-                        # current_time = datetime.datetime.strptime(current_time_string, "%Y-%m-%dT%H:%M:%S.%f%z")
-                        # minutes_passed = (current_time.year - date.year) * 12*30*24*60 + (current_time.month - date.month)*30*24*60 + (current_time.day - date.day)*24*60 + (current_time.hour - date.hour)*60 + (current_time.minute - date.minute)
-                        
-                        #find total months passed till date, for each package
-                        months_passed = (current_date.year - created_date.year)*12 + (current_date.month - created_date.month)
-                        print(months_passed)
-                        
-                        if months_passed >= 1: 
-                            level1_bonus += depositObj.quantity *months_passed * 10
+                if usernameObj.packages is not None:
+                    userpackages = json.loads(usernameObj.packages)
+                    for item in userpackages:
+                        #print(item)
+                        id = uuid.UUID(item).hex
+                        #print(id)
+                        depositObj = Deposit.objects.filter(id = id).first()
+                        #print(depositObj.username)
+                        if depositObj.status == 'pending' or depositObj.status == 'expired':
+                            continue
+                        else:
+                            
+                            created_date = depositObj.date.date()
+                            #created_date = datetime.datetime.strptime('2023-05-18', "%Y-%m-%d").date()
+                            current_date_string= datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata')).date().isoformat()
+                            current_date = datetime.datetime.strptime(current_date_string, "%Y-%m-%d").date()
+                            #print("\n",date)
+                            # current_time_string = datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata')).isoformat()
+                            # current_time = datetime.datetime.strptime(current_time_string, "%Y-%m-%dT%H:%M:%S.%f%z")
+                            # minutes_passed = (current_time.year - date.year) * 12*30*24*60 + (current_time.month - date.month)*30*24*60 + (current_time.day - date.day)*24*60 + (current_time.hour - date.hour)*60 + (current_time.minute - date.minute)
+                            
+                            #find total months passed till date, for each package
+                            months_passed = (current_date.year - created_date.year)*12 + (current_date.month - created_date.month)
+                            print(months_passed)
+                            
+                            if months_passed >= 1: 
+                                level1_bonus += depositObj.quantity *months_passed * 50
 
             print("\nlevel1bonus " ,level1_bonus )  
             #update level-1 bonus in referral
@@ -108,32 +112,33 @@ def update_referral():
             for item in level2:
                 #print(item)
                 usernameObj = Mypackages.objects.filter(username = item).first()
-                userpackages = userpackages = json.loads(usernameObj.packages)
-                for item in userpackages:
-                    #print(item)
-                    id = uuid.UUID(item).hex
-                    #print(id)
-                    depositObj = Deposit.objects.filter(id = id).first()
-                    #print(depositObj.username)
-                    if depositObj.status == 'pending' or depositObj.status == 'expired':
-                        continue
-                    else:
-                        
-                        #created_date = depositObj.date.date()
-                        created_date = datetime.datetime.strptime('2023-05-18', "%Y-%m-%d").date()
-                        current_date_string= datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata')).date().isoformat()
-                        current_date = datetime.datetime.strptime(current_date_string, "%Y-%m-%d").date()
-                        #print("\n",date)
-                        # current_time_string = datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata')).isoformat()
-                        # current_time = datetime.datetime.strptime(current_time_string, "%Y-%m-%dT%H:%M:%S.%f%z")
-                        # minutes_passed = (current_time.year - date.year) * 12*30*24*60 + (current_time.month - date.month)*30*24*60 + (current_time.day - date.day)*24*60 + (current_time.hour - date.hour)*60 + (current_time.minute - date.minute)
-                        
-                        #find total months passed till date, for each package
-                        months_passed = (current_date.year - created_date.year)*12 + (current_date.month - created_date.month)
-                        print(months_passed)
-                        
-                        if months_passed >= 1: 
-                            level2_bonus += depositObj.quantity* months_passed * 5
+                if usernameObj.packages is not None:
+                    userpackages = json.loads(usernameObj.packages)
+                    for item in userpackages:
+                        #print(item)
+                        id = uuid.UUID(item).hex
+                        #print(id)
+                        depositObj = Deposit.objects.filter(id = id).first()
+                        #print(depositObj.username)
+                        if depositObj.status == 'pending' or depositObj.status == 'expired':
+                            continue
+                        else:
+                            
+                            created_date = depositObj.date.date()
+                            #created_date = datetime.datetime.strptime('2023-05-18', "%Y-%m-%d").date()
+                            current_date_string= datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata')).date().isoformat()
+                            current_date = datetime.datetime.strptime(current_date_string, "%Y-%m-%d").date()
+                            #print("\n",date)
+                            # current_time_string = datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata')).isoformat()
+                            # current_time = datetime.datetime.strptime(current_time_string, "%Y-%m-%dT%H:%M:%S.%f%z")
+                            # minutes_passed = (current_time.year - date.year) * 12*30*24*60 + (current_time.month - date.month)*30*24*60 + (current_time.day - date.day)*24*60 + (current_time.hour - date.hour)*60 + (current_time.minute - date.minute)
+                            
+                            #find total months passed till date, for each package
+                            months_passed = (current_date.year - created_date.year)*12 + (current_date.month - created_date.month)
+                            print(months_passed)
+                            
+                            if months_passed >= 1: 
+                                level2_bonus += depositObj.quantity* months_passed * 25
 
             print("\nlevel1bonus " ,level1_bonus )
             update2 = ReferralDB.objects.filter(username = user.username).update(bonus2= level2_bonus) 
@@ -149,4 +154,28 @@ def update_referral():
         print("total_earning and bonus" , current_balance,total_bonus)
 
 
+
+def update_packages():
+    users = Mypackages.objects.all()
+    print(users)
+    for user in users:
+        total_packages = 0
+        if user.packages is not None: 
+            userpackages = json.loads(user.packages)
+            for item in userpackages:
+                #print(item)
+                id = uuid.UUID(item).hex
+                #print(id)
+                depositObj = Deposit.objects.filter(id = id).first()
+                #print(depositObj.username)
+                if depositObj.status == 'pending' or depositObj.status == 'expired':
+                    continue
+                else:
+                    total_packages += depositObj.quantity
                         
+        u_mypackage = Mypackages.objects.filter(username = user.username).update(t_packages = total_packages)
+
+        print("/n")
+        print("total pckaed : ", total_packages)
+   
+    

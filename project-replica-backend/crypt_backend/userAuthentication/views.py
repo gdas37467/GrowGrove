@@ -56,7 +56,7 @@ def signup_view(request):
             user.set_password(password)
             
             #profile obejct for UserModelDB
-            profile = UserModelDB(email=email,username=username,sponsorName=sponsorName,registrationDate=datetime.date.today(), referralLink='http://localhost:3000/sign-up/' + username)
+            profile = UserModelDB(email=email,username=username,sponsorName=sponsorName,registrationDate=datetime.date.today(), referralLink='https://cryptoption.org/sign-up/' + username)
             
             #push user to referralTable
             referralTable = ReferralDB(username=username)
@@ -104,6 +104,7 @@ def signup_view(request):
             mypackagesDB.save()
             
             # Create JWT token
+            
             token = jwt.encode({'email': email}, secret_key, algorithm='HS256')
             return JsonResponse({'success':'user successfully signed up','token': token},status=200)
     
@@ -126,16 +127,26 @@ def signin_view(request):
         user = authenticate(request, email=email, password=password)
         print(user)
         
-        if user is not None:
-            # Log in the authenticated user
-            login(request, user)
+        try: 
+            if user is not None:
+                # Log in the authenticated user
+                login(request, user)
 
-            # Create JWT token
-            token = jwt.encode({'email': email}, secret_key, algorithm='HS256')
-            
-            return JsonResponse({'success': 'Login successful','token': token},status=200)
-        else:
-            return JsonResponse({'error': 'Invalid credentials'},status=401)
+                # Create JWT token
+                token = jwt.encode({'email': email}, secret_key, algorithm='HS256')
+                is_staff = user.is_superuser
+                #newline update
+                val = False
+                if not is_staff:
+                    val = UserModelDB.objects.filter(email = email).first().is2fa
+
+                is2fa = jwt.encode({'is2fa': val}, secret_key, algorithm='HS256')
+                
+                return JsonResponse({'success': 'Login successful','token': token ,'is_staff' : is_staff, 'is2fa' : is2fa},status=200)
+            else:
+                return JsonResponse({'error': 'Invalid credentials'},status=401)
+        except Exception as e:
+            return JsonResponse({"error" : e})
     
     return JsonResponse({'error':'Invalid Request'})
 
@@ -157,24 +168,31 @@ def depositView(request):
         except jwt.InvalidTokenError:
             return JsonResponse({'error': 'Invalid token'},status=401)
         
-        username = UserModelDB.objects.filter(email = userIdEmail).first().username
+        username = UserModelDB.objects.filter(email = userIdEmail).first()
+        if username.walletAddress == "Address not set yet":
+            return JsonResponse({'error': 'Invalid Wallet Address'},status=400)
         
         body = json.loads(request.body)
         quantity = body['quantity']
         transaction_id = body['transaction_id']
         payment_id = body['payment_id']
         dateObj = datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata'))
-        iso_format = "%Y-%m-%d %H:%M:%S"
-        date  = datetime.datetime.strftime(dateObj, iso_format)
+        iso_format = "%Y-%m-%d"
+        date  = datetime.date.strftime(dateObj, iso_format)
+
         
-        
+        trans_obj =  Deposit.objects.filter(transactionId=transaction_id).first()
+        if trans_obj is not None : 
+            return JsonResponse({'error': 'Transaction ID already exists.'},status=500)
+   
         try : 
             deposit = Deposit(
                 id=str(uuid.uuid4()),
-                username = username,
+                username = username.username,
                 quantity = quantity,
                 transactionId = transaction_id,
-                date = date
+                date = date,
+                payment_id = payment_id
             
             )
            
@@ -206,7 +224,9 @@ def withdrawView(request):
         except jwt.InvalidTokenError:
             return JsonResponse({'error': 'Invalid token'},status=401)
         
-        username = UserModelDB.objects.filter(email = userIdEmail).first().username
+        username = UserModelDB.objects.filter(email = userIdEmail).first()
+        if username.walletAddress == "Address not set yet":
+            return JsonResponse({'error': 'Invalid Wallet Address'},status=400)
         
         body = json.loads(request.body)
         amount = body['amount']
@@ -218,15 +238,17 @@ def withdrawView(request):
         try : 
             withdraw = Withdraw(
                 id=str(uuid.uuid4()),
-                username = username,
+                username = username.username,
                 amount = float(amount),
-                date = date
+                date = date,
+                walletAddress = username.walletAddress
             
             )
            
             withdraw.save()
             
         except Exception as e:
+            
             return JsonResponse({'error' : 'Error while saving the data'},status = 400)
       
         return JsonResponse({'success'  : 'Withdraw details stored successfully'} ,status=200)
@@ -252,11 +274,13 @@ def get_user_withdraw(request) :
             return JsonResponse({'error': 'Invalid token'})
         
         try:
-            username = User.objects.filter(email = userIdEmail).first()
+            user = UserModelDB.objects.filter(email = userIdEmail).first()
+            username = user.username
             print(username)
             withdraw  = Withdraw.objects.filter(username = username )
             userpackageObj = Mypackages.objects.filter(username=username).first()
             current_balance = float(Decimal(str(userpackageObj.current_balance)))
+            walletAddress = user.walletAddress
             # print(deposit)
             # if(deposit == None) : 
             #     return JsonResponse({'error': 'Empty' },status = 500)
@@ -269,11 +293,13 @@ def get_user_withdraw(request) :
 
             for item in withdraw:
                 if item.status == 'confirmed' : 
-                    status = 'Active'
+                    status = 'Confirmed'
                 if item.status == 'expired' : 
                     status = 'Expired'
                 if item.status == 'pending' :
                     status = 'Pending'
+                if item.status == 'Rejected' :
+                    status = 'Rejected'
 
                 withdrawals.append({
                     'id' : str(item.id),
@@ -291,7 +317,8 @@ def get_user_withdraw(request) :
             return JsonResponse({
                     'success': 'Withdrawal List fetched successfully',
                     'transactions' : withdrawals,
-                    'current_balance' : current_balance
+                    'current_balance' : current_balance,
+                    'walletAddress' : walletAddress
                 },status=200, safe=False)
 
     return JsonResponse({'error' : 'Invalid request method' } ,status=400)
@@ -339,7 +366,7 @@ def get_user_deposit(request) :
                 deposits.append({
                     'id' : str(item.id),
                    
-                    'amount' : float(Decimal(str(item.quantity))) * float(100),
+                    'amount' : float(Decimal(str(item.quantity))) * float(500),
                     'date' : item.date.date(),
                     'status' : status
 
@@ -556,7 +583,7 @@ def get_user_all(request) :
             packageObj = Mypackages.objects.filter(username = usernameObj.username).first()
             total_earning = float(Decimal(str(packageObj.t_earning)))
             total_packages = packageObj.t_packages
-            amount = float(total_packages*100)
+            amount = float(total_packages*500)
             referral_link = usernameObj.referralLink
             wallet_address = usernameObj.walletAddress
 
@@ -604,12 +631,13 @@ def get_wallet_details(request):
             packagesObj = Mypackages.objects.filter(username = username).first()
             total_earning = float(Decimal(str(packagesObj.t_earning)))
             current_balance = float(Decimal(str(packagesObj.current_balance)))
-            amount = float(packagesObj.t_packages * 100)
+            amount = float(packagesObj.t_packages * 500)
+            t_packages = packagesObj.t_packages
             obj = {
                 'current_balance' : current_balance,
                 'total_earning' : total_earning,
-                'amount' : amount
-                            
+                'amount' : amount,
+                'total_packages' : t_packages       
                     }
 
             return JsonResponse({'success' : 'Returned successfully',
@@ -664,7 +692,9 @@ def buy_package(request) :
             
             myPackageObj = Mypackages.objects.filter(username = username).first()
             print(myPackageObj)
-
+            current_balance = float(Decimal(str(myPackageObj.current_balance)))
+            current_balance -= float(Decimal(str(500*int(quantity))))
+            update_curr_balance = Mypackages.objects.filter(username = username).update(current_balance = current_balance)
                
             array = []
             if myPackageObj.packages != None:
@@ -723,6 +753,9 @@ def set_wallet_address(request):
         body = json.loads(request.body)
 
         wallet_address = body['wallet_address']
+        wallet_obj =  UserModelDB.objects.filter(walletAddress = wallet_address).first()
+        if wallet_obj is not None : 
+            return JsonResponse({'error': 'Wallet Address already exists.'},status=500)
         try :
 
             userObj  = UserModelDB.objects.filter(username = username).update(walletAddress =wallet_address)
